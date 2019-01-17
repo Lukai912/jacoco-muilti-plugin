@@ -23,7 +23,7 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
             }
         } else {
             rootProject.afterEvaluate {
-                final def extension = rootProject.junitJacoco
+                final def extension = rootProject.JacocoMuilti
 
                 addJacoco(rootProject, extension)
             }
