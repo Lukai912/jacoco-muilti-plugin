@@ -13,7 +13,7 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
         final def hasSubProjects = rootProject.subprojects.size() > 0
 
         if (hasSubProjects) {
-            final def (JacocoMerge mergeTask, JacocoReport mergedReportTask) = addJacocoMergeToRootProject(rootProject, rootProject.junitJacoco)
+            final def (JacocoMerge mergeTask, JacocoReport mergedReportTask) = addJacocoMergeToRootProject(rootProject, rootProject.JacocoMuilti)
 
             rootProject.subprojects { subProject ->
                 afterEvaluate {
