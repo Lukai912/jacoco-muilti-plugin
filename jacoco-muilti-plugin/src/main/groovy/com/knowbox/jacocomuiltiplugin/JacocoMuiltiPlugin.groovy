@@ -126,7 +126,7 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
             final def instrumentationTestTaskName = "create${sourceName.capitalize()}CoverageReport"
             if (buildType.testCoverageEnabled) {
                 addJacocoTask(true, subProject, extension, mergeTask, mergedReportTask, combinedTaskName,
-                        jvmTestTaskName, instrumentationTestTaskName, sourceName, sourcePath, productFlavorName, buildTypeName)
+                        "", "", sourceName, sourcePath, productFlavorName, buildTypeName)
             }
         }
 
