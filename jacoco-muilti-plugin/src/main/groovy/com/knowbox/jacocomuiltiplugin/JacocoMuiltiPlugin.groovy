@@ -61,9 +61,9 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
 
             rootProject.allprojects.each {
 
-                sourceDirectories += rootProject.files(it.projectDir.absolutePath + '/src/main/java')
+                sourceDirectories += it.files(it.projectDir.absolutePath + '/src/main/java')
                 def path = it.buildDir.absolutePath + '/intermediates/classes/debug'
-                classDirectories += rootProject.fileTree(dir: path, excludes: classExcludes, includes: ['**/*.class'])
+                classDirectories += it.fileTree(dir: path, excludes: classExcludes, includes: ['**/*.class'])
             }
 
             doFirst {
