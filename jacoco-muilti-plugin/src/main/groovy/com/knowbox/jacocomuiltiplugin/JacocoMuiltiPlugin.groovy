@@ -8,24 +8,69 @@ import com.android.build.gradle.api.BaseVariant
 class JacocoMuiltiPlugin implements Plugin<Project> {
     @Override
     void apply(final Project rootProject) {
-        rootProject.extensions.create('JacocoMuilti', JunitJacocoExtension)
-
-        final def hasSubProjects = rootProject.subprojects.size() > 0
-
-        if (hasSubProjects) {
-            final def (JacocoMerge mergeTask, JacocoReport mergedReportTask) = addJacocoMergeToRootProject(rootProject, rootProject.JacocoMuilti)
-
-            rootProject.subprojects { subProject ->
-                afterEvaluate {
-                    final def extension = rootProject.JacocoMuilti
-                    addJacoco(subProject, extension, mergeTask, mergedReportTask)
+        rootProject.subprojects { p ->
+            if(ignoreProjects.contains(p.name)){
+                return;
+            }
+            if(!ignoreProjects.contains(p.name)){
+                p.afterEvaluate {
+                    if(!p.extensions.findByName("android")){
+                        return;
+                    }
+                    println "p:${p.name}"
+                    p.android {
+                        apply plugin: 'jacoco'
+                        buildTypes {
+                            debug {
+                                testCoverageEnabled = true
+                            }
+                        }
+                    }
                 }
             }
-        } else {
-            rootProject.afterEvaluate {
-                final def extension = rootProject.JacocoMuilti
+            p.afterEvaluate {
+                if(p.getPlugins().hasPlugin("com.android.application")) {
+                    println "android:${p.name}"
+                }
+            }
 
-                addJacoco(rootProject, extension)
+        }
+        rootProject.plugins.apply('jacoco')
+
+        rootProject.jacoco {
+            toolVersion = '0.8.1'
+        }
+        subProject.task("jacocoTestReport", type: JacocoReport) {
+            group = "Reporting"
+            reports {
+                xml.enabled true
+                html.enabled true
+                csv.enabled false
+            }
+
+            executionData fileTree("${rootProject.projectDir}/").include("**/*.ec")
+            def classExcludes = ['**/R*.class',
+                                 '**/*Factory*.class',
+                                 '**/*$InjectAdapter*.class',
+                                 '**/*$ModuleAdapter*.class',
+                                 '**/*$ViewInjector*.class']
+
+            sourceDirectories = files()
+            classDirectories = files()
+
+            project.rootProject.allprojects.each {
+
+                sourceDirectories += files(it.projectDir.absolutePath + '/src/main/java')
+                def path = it.buildDir.absolutePath + '/intermediates/classes/debug'
+                classDirectories += fileTree(dir: path, excludes: classExcludes, includes: ['**/*.class'])
+            }
+
+            doFirst {
+                fileTree(dir: project.rootDir.absolutePath, includes: ['**/classes/**/*.class']).each { File file ->
+                    if (file.name.contains('$$')) {
+                        file.renameTo(file.path.replace('$$', '$'))
+                    }
+                }
             }
         }
     }
