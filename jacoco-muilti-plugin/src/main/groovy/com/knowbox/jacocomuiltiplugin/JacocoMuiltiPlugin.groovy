@@ -6,6 +6,7 @@ import org.gradle.testing.jacoco.tasks.JacocoMerge
 import org.gradle.testing.jacoco.tasks.JacocoReport
 import com.android.build.gradle.api.BaseVariant
 class JacocoMuiltiPlugin implements Plugin<Project> {
+    String[] ignoreProjects = ["security"]
     @Override
     void apply(final Project rootProject) {
         rootProject.subprojects { p ->
