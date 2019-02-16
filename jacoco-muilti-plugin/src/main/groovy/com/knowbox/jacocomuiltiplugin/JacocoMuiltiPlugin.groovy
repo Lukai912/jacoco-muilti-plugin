@@ -49,25 +49,25 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
                 csv.enabled false
             }
 
-            executionData fileTree("${rootProject.projectDir}/").include("**/*.ec")
+            executionData rootProject.fileTree("${rootProject.projectDir}/").include("**/*.ec")
             def classExcludes = ['**/R*.class',
                                  '**/*Factory*.class',
                                  '**/*$InjectAdapter*.class',
                                  '**/*$ModuleAdapter*.class',
                                  '**/*$ViewInjector*.class']
 
-            sourceDirectories = files()
-            classDirectories = files()
+            sourceDirectories = rootProject.files()
+            classDirectories = rootProject.files()
 
-            project.rootProject.allprojects.each {
+            rootProject.allprojects.each {
 
-                sourceDirectories += files(it.projectDir.absolutePath + '/src/main/java')
+                sourceDirectories += rootProject.files(it.projectDir.absolutePath + '/src/main/java')
                 def path = it.buildDir.absolutePath + '/intermediates/classes/debug'
-                classDirectories += fileTree(dir: path, excludes: classExcludes, includes: ['**/*.class'])
+                classDirectories += rootProject.fileTree(dir: path, excludes: classExcludes, includes: ['**/*.class'])
             }
 
             doFirst {
-                fileTree(dir: project.rootDir.absolutePath, includes: ['**/classes/**/*.class']).each { File file ->
+                rootProject.fileTree(dir: rootProject.rootDir.absolutePath, includes: ['**/classes/**/*.class']).each { File file ->
                     if (file.name.contains('$$')) {
                         file.renameTo(file.path.replace('$$', '$'))
                     }
