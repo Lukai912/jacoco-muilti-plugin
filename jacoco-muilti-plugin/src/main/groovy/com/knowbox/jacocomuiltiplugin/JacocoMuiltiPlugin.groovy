@@ -41,7 +41,7 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
         rootProject.jacoco {
             toolVersion = '0.8.1'
         }
-        subProject.task("jacocoTestReport", type: JacocoReport) {
+        rootProject.task("jacocoTestReport", type: JacocoReport) {
             group = "Reporting"
             reports {
                 xml.enabled true
