@@ -13,22 +13,28 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
             if(ignoreProjects.contains(p.name)){
                 return;
             }
-            if(!ignoreProjects.contains(p.name)){
-                p.afterEvaluate {
-                    if(!p.extensions.findByName("android")){
-                        return;
-                    }
-                    println "p:${p.name}"
-                    p.android {
-                        apply plugin: 'jacoco'
-                        buildTypes {
-                            debug {
-                                testCoverageEnabled = true
+            try{
+                if(!ignoreProjects.contains(p.name)){
+                    p.afterEvaluate {
+                        if(!p.extensions.findByName("android")){
+                            return;
+                        }
+                        println "test:${p.name}"
+                        p.plugins.apply('jacoco')
+                        p.extensions.android {
+                            buildTypes {
+                                debug {
+                                    testCoverageEnabled = true
+                                }
                             }
                         }
+                        println "debug:${p.name}"
                     }
                 }
+            } catch (Exception e){
+                e.printStackTrace()
             }
+
             p.afterEvaluate {
                 if(p.getPlugins().hasPlugin("com.android.application")) {
                     println "android:${p.name}"
