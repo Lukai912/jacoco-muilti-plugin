@@ -21,7 +21,7 @@ class JacocoMuiltiPlugin implements Plugin<Project> {
                         }
                         println "test:${p.name}"
                         p.plugins.apply('jacoco')
-                        p.extensions.android {
+                        p.android {
                             buildTypes {
                                 debug {
                                     testCoverageEnabled = true
